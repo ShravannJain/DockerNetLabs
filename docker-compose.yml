@@ -14,7 +14,14 @@ services:
     networks:
       custom-network:
         ipv4_address: 192.168.1.3
-    command: ["ping", "192.168.1.2", "-c", "4"]
+    command: ["sleep","infinity"]
+  
+  client2:
+    image: alpine
+    container_name: client2
+    networks:
+      custom-network:
+    command: ["sleep","infinity"]
 
 networks:
   custom-network:
