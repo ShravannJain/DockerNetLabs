@@ -4,7 +4,7 @@ services:
     container_name: dhcp-server
     networks:
       subnet1:
-        ipv4_address: 192.168.1.2
+        ipv4_address: 192.168.1.9
     command: ["-d", "--dhcp-range=192.168.1.10,192.168.1.100,12h"]
     
   client1:
@@ -28,7 +28,11 @@ services:
     networks:
       subnet1:
       subnet2:
-    command: ["sh", "-c", "apk add iproute2 && sysctl -w net.ipv4.ip_forward=1 && sleep infinity"]
+    command: ["sh", "-c", "apk add iproute2 && \
+         sysctl -w net.ipv4.ip_forward=1 && \
+         ip route show | grep -q '192.168.2.0/24' || ip route add 192.168.2.0/24 via 192.168.2.1 && \
+         ip route show | grep -q '192.168.1.0/24' || ip route add 192.168.1.0/24 via 192.168.1.1 && \
+         sleep infinity"]
 
 networks:
   subnet1:
@@ -36,7 +40,7 @@ networks:
     ipam:
       config:
         - subnet: "192.168.1.0/24"
-          gateway: 192.168.1.1
+          gateway: "192.168.1.1"
   subnet2:
     driver: bridge
     ipam:
